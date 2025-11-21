@@ -1,0 +1,38 @@
+@startuml C4_Level2
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_TOP_DOWN()
+
+Person(user, "Usuário")
+
+System_Boundary(system, "Sistema de processamento de imagem distribuído") {
+
+    Container(api, "API Gateway", "REST/HTTP", "Recebe requests")
+
+    Container(queue, "Fila de Operações", "Message Queue", "Buffers para tarefas de processamento de imagens")
+
+    Container(loadbalancer, "Load Balancer", "LB", "Distribui processamento para os nós")
+
+    Container(workercluster, "Worker Cluster", "Nós distribuídos", "Executa pipelines composta de filtros")
+
+    Container(filters, "Biblioteca de filtros", "Módulos", "Conjunto de filtros de processadores de imagens")
+
+    Container(observability, "Camada de observabilidade", "Logs", "Colecta logs")
+
+    Container(storage, "Object Storage", "Blob Storage", "Stores input and processed images")
+}
+
+Container_Ext(metrics, "Plataforma de logs e métricas")
+
+Rel(user, api, "Faz upload de mensagens")
+
+Rel(api, queue, "Envia processamentos processados")
+Rel(queue, loadbalancer, "Envia tarefas")
+Rel(loadbalancer, workercluster, "Distribui processamento")
+
+Rel(workercluster, filters, "Executa pipeline de filtros")
+Rel(workercluster, storage, "Escreve no banco")
+
+Rel(observability, metrics, "Exporta logs")
+
+@enduml
