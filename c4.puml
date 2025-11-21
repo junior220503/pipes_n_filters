@@ -1,15 +1,17 @@
-@startuml
+@startuml C4_Level1
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
 LAYOUT_TOP_DOWN()
 
+Person(user, "Usuário", "Faz upload de mensagens")
 
-Person(user, "User", "Uploads images and views results.")
+System(system, "Sistema distribuído de processamento de imagens", "Processa imagens usando pipelines de filtros distribuídos, load balancing e observabilidade.")
 
-System(imageSystem, "Distributed Image Processing System", "Processes images through a pipeline of filters and stores the final output.")
+System_Ext(storage, "Armazenamento de dados", "Guarda imagens processadas")
+System_Ext(metrics, "Plataforma de log e métricas", "Coleta logs e métricas")
 
-Rel(user, imageSystem, "Uploads images", "HTTP")
-Rel(imageSystem, user, "Provides processed image", "HTTP")
+Rel(user, system, "Carrega imagens")
+Rel(system, storage, "Guarda imagens")
+Rel(system, metrics, "Coleta informações")
 
-SHOW_LEGEND()
 @enduml
