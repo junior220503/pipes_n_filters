@@ -1,0 +1,22 @@
+meta {
+  name: run
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:4001/run
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "processingType": "heavy"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

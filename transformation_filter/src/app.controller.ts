@@ -15,7 +15,9 @@ export class AppController {
 
   @Post('/run')
     async run(@Body() body: RunRequest) {
+    console.log('Running transformation_filter with type:', body.processingType);
     this.appService.run(body);
+    console.log('transformation_filter run completed');
     return { received: true };
   }
 }

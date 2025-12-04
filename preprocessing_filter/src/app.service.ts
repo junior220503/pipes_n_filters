@@ -31,11 +31,11 @@ export class AppService {
 
     const processed = this.generateGaussianKernel(parameter, parameter);
 
-    fetch(`http://transform-service:${this.port}/run`, {
+    fetch(`http://transformation-filter:${this.port}/run`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({processingType: type}),
-    }).catch(() => {});
+    }).catch((error) => {console.log('Error forwarding to transformation filter', error);});
 
     return 'sent';
   }

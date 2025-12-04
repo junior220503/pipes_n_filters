@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "pipes_n_filters",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

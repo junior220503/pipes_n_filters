@@ -1,0 +1,69 @@
+version: "3.9"
+
+services:
+  preprocessing-filter:
+    build: ./preprocessing_filter
+    container_name: preprocessing-filter
+    environment:
+      SERVICE_PORT: 4001
+      NEXT_PIPE_PORT: 4002
+    ports:
+      - "4001:4001"
+    networks:
+      - filters
+
+  transformation-filter:
+    build: ./transformation_filter
+    container_name: transformation-filter
+    environment:
+      SERVICE_PORT: 4002
+      NEXT_PIPE_PORT: 4003
+    ports:
+      - "4002:4002"
+    networks:
+      - filters
+
+  ai-filter:
+    build: ./ai_filter
+    container_name: ai-filter
+    environment:
+      SERVICE_PORT: 4003
+      NEXT_PIPE_PORT: ""
+    ports:
+      - "4003:4003"
+    networks:
+      - filters
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "4318:4318"
+      - "9464:9464"
+    networks: [filters]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.48
+    ports:
+      - "16686:16686" 
+    networks: [filters]
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks: [filters]
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks: [filters]
+
+networks:
+  filters:
+    driver: bridge

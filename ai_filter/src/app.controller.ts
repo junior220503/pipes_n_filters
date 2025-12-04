@@ -15,7 +15,9 @@ export class AppController {
 
   @Post('/run')
     async run(@Body() body: RunRequest) {
+    console.log('Running ai_filter with type:', body.processingType);
     this.appService.run(body);
+    console.log('ai_filter run completed');
     return { received: true };
   }
 }
