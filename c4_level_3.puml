@@ -1,27 +1,17 @@
-@startuml
+@startuml C4_Level3
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-LAYOUT_LEFT_RIGHT()
+title Diagrama de Componente - AI Filter (Microserviço)
 
-Container(loadbalancer, "Load Balancer", "LB", "Distribui processamento para os nós")
+Container(transf_app, "Transformation Filter", "NestJS", "Origem dos dados")
 
-Container_Boundary(filters, "Filtros"){
-    Component(img_loader, "Image Loader", "Filtro", "Recupera dados crus da imagem")
-
-    Component(filter_a, "Filtro de pre-processamento", "Filtro", "Decodifica, normaliza e redimensiona a imagem")
-
-    Component(filter_b, "Filtro de transformação", "Filtro", "Aplica transformações")
-
-    Component(filter_c, "Filtro de IA", "Filtro", "Executa inferência de aprendizado de máquina para aprimoramento")
-
-    Component(img_exporter, "Exportador", "Filtro", "Gera a imagem processada para armazenamento")
+Container_Boundary(ai_app, "AI Filter Application") {
+    Component(appController, "App Controller", "NestJS Controller", "Recebe requisições de processamento de IA.")
+    Component(appService, "App Service", "NestJS Service", "Contém a lógica de negócio e orquestra o modelo de IA.")
+    Component(aiModel, "AI Logic/Model", "Lib/TensorFlow", "Executa a inferência real.")
 }
 
-Rel(loadbalancer, filters, "Entrega dados e gerencia")
-
-Rel(img_loader, filter_a, "Pipe dados de imagem", "pipe de processamento")
-Rel(filter_a, filter_b, "Pipe de transformação", "pipe de processamento")
-Rel(filter_b, filter_c, "Pipe de melhoria da imagem", "pipe de processamento")
-Rel(filter_c, img_exporter, "Pipe de imagem final", "pipe de processamento")
-
+Rel(transf_app, appController, "Envia solicitação", "DTO")
+Rel(appController, appService, "Chama método de processamento")
+Rel(appService, aiModel, "Executa inferência")
 @enduml
