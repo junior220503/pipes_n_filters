@@ -4,16 +4,15 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 
+const otlpEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
+
 const sdk = new NodeSDK({
-  traceExporter: new OTLPTraceExporter({
-    url: 'http://otel-collector:4318/v1/traces',
-  }),
+  traceExporter: new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` }),
   metricReader: new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({
-      url: 'http://otel-collector:4318/v1/metrics',
-    }),
+    exporter: new OTLPMetricExporter({ url: `${otlpEndpoint}/v1/metrics` }),
+    exportIntervalMillis: 1000,
   }),
-  instrumentations: [ getNodeAutoInstrumentations() ],
+  instrumentations: [getNodeAutoInstrumentations()],
   serviceName: 'ai-filter',
 });
 
