@@ -1,4 +1,4 @@
-# ADR 002: Estratégia de Observabilidade (Observability)
+# ADR 002: Estratégia de Observability
 
 ## Status
 Aceito
